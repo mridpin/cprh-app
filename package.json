@@ -1,0 +1,24 @@
+{
+  "name": "copyright-holder-check-app",
+  "version": "1.0.0",
+  "description": "server side for copyright holder checker app",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mridpin/cprh-app.git"
+  },
+  "author": "mridpin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mridpin/cprh-app/issues"
+  },
+  "homepage": "https://github.com/mridpin/cprh-app#readme",
+  "dependencies": {
+    "base-64": "^1.0.0",
+    "utf8": "^3.0.0"
+  }
+}
