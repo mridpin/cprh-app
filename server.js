@@ -3,6 +3,7 @@ import utf8 from 'utf8';
 import Express from 'express';
 import axios from 'axios';
 import qs from 'qs';
+import cors from 'cors';
 
 // Constants
 const CLIENT_ID = utf8.encode(process.env.CLIENT_ID);
@@ -18,6 +19,7 @@ const spotifyAlbumsUrl = 'https://api.spotify.com/v1/albums?';
 
 // Configs
 app.use(Express.json())
+app.use(cors());
 
 // Auth: get token
 console.log(process.env.CLIENT_ID);
@@ -35,6 +37,7 @@ app.get('/search', (req, res) => {
             authToken = authRes.data.access_token;
             // todo: sanitize user input
             // todo: decode %20 spaces
+            console.log(req.query)
             if (req.query.search) {
                 getSpotifySearch(authToken, req.query.search)
                     .then(searchRes => {
@@ -47,7 +50,7 @@ app.get('/search', (req, res) => {
                     });
             } else {
                 console.log(`Search parameters are empty. Process aborted`);
-                res.status(err.response.status).send(`Search parameters are empty. Process aborted`);
+                res.status(400).send(`Search parameters are empty. Process aborted`);
             }
         }).catch(err => {
             console.log(`Spotify Auth error ${err}`);
