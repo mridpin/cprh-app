@@ -39,7 +39,6 @@ app.get('/search', (req, res) => {
       authToken = authRes.data.access_token;
       // todo: sanitize user input
       // todo: decode %20 spaces
-      console.log(req.query);
       if (req.query.search) {
         getSpotifySearch(authToken, req.query.search)
           .then((searchRes) => {
