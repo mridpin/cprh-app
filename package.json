@@ -2,10 +2,11 @@
   "name": "copyright-holder-check-app",
   "version": "1.0.0",
   "description": "server side for copyright holder checker app",
-  "main": "server.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node src/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,8 +22,14 @@
     "axios": "^0.21.1",
     "base-64": "^1.0.0",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "qs": "^6.9.6",
     "utf8": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
   }
 }
