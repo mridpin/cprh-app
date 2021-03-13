@@ -1,12 +1,11 @@
 version: '3.9'
 services:
   webapp:
-    image: ridao/cprh:v0.1
     build: .
-    # command: npm run start
-    # volumes:
-    #   # allows to make changes to the project from local development, will be picked up by project inside Docker
-    #   - .:/usr/app/ 
-    #   - /usr/app/node_modules
+    command: npm run start
+    volumes:
+      # allows to make changes to the project from local development, will be picked up by project inside Docker
+      - .:/usr/app/ 
+      - /usr/app/node_modules
     ports:
       - "8000:8000"
