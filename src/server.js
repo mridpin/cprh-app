@@ -1,23 +1,22 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
 import Express from 'express';
-import axios from 'axios';
-import qs from 'qs';
 import cors from 'cors';
 import dotenv from 'dotenv'
+import SpotifyAPIService from './spotifyAPIservice.js';
 
 // Constants
 dotenv.config();
 const CLIENT_ID = utf8.encode(process.env.CLIENT_ID);
 const CLIENT_SECRET = utf8.encode(process.env.CLIENT_SECRET);
 const app = new Express();
-const port = 8000;
+const port = process.env.PORT;
 
-const spotifyAuthUrl = 'https://accounts.spotify.com/api/token';
-const spotifyAuthClient = `Basic ${base64.encode(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
+export const spotifyAuthUrl = 'https://accounts.spotify.com/api/token';
+export const spotifyAuthClient = `Basic ${base64.encode(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
 
-const spotifySearchUrl = 'https://api.spotify.com/v1/search?';
-const spotifyAlbumsUrl = 'https://api.spotify.com/v1/albums?';
+export const spotifySearchUrl = 'https://api.spotify.com/v1/search?';
+export const spotifyAlbumsUrl = 'https://api.spotify.com/v1/albums?';
 
 // Configs
 app.use(Express.json());
@@ -28,79 +27,54 @@ console.log(process.env.CLIENT_ID);
 console.log(process.env.CLIENT_SECRET);
 
 // -------------------------- API ENDPOINTS --------------------------
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello World!' });
+});
 
 /**
- * Returns the five most likely matches for the user search parameters
+ * GET Endpoint. Returns the five most likely matches for the user search parameters
+ * Query Params: search = terms to search from Spotify
  */
 app.get('/search', (req, res) => {
   let authToken = '';
-  getSpotifyAuthToken()
+  SpotifyAPIService.getSpotifyAuthToken(spotifyAuthUrl, spotifyAuthClient)
     .then((authRes) => {
       authToken = authRes.data.access_token;
       // todo: sanitize user input
       // todo: decode %20 spaces
+      // todo: check for valid input BEFORE calling spofity auth
       if (req.query.search) {
-        getSpotifySearch(authToken, req.query.search)
+        SpotifyAPIService.getSpotifySearch(spotifySearchUrl, authToken, req.query.search)
           .then((searchRes) => {
             console.log(`Search query to Spotify successful. Returning ${searchRes.data.albums.items.length} items`);
-            res.send(searchRes.data);
+            res.status(200).send(searchRes.data);
           })
           .catch((err) => {
-            console.log(`Spotify Search error => ${err}`);
-            res.status(err.response.status).send(`Spotify Search error => ${err}`);
+            console.log(`Spotify Search error => ${err.error.message}`);
+            res.status(err.error.status).send(`Spotify Search error => ${err.error.message}`);
           });
       } else {
         console.log('Search parameters are empty. Process aborted');
         res.status(400).send('Search parameters are empty. Process aborted');
       }
     }).catch((err) => {
-      console.log(`Spotify Auth error ${err}`);
-      res.status(err.response.status).send(`Spotify Auth error => ${err}`);
+      console.log(`Spotify Auth error ${err.response.body}`);
+      res.status(err.response.status).send(`Spotify Auth error => ${err.response.body}`);
     });
 });
 
 /**
- * Get auth token to access Spotify API.
- * Returns a Promise with the response
+ * GET Endpoint. Returns an album from Spotify API
+ * Query Params: albumId = album id to search from Spotify
  */
-async function getSpotifyAuthToken() {
-  const data = qs.stringify({
-    grant_type: 'client_credentials',
-  });
-  const config = {
-    method: 'post',
-    url: spotifyAuthUrl,
-    headers: {
-      Authorization: spotifyAuthClient,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    data,
-  };
-  return await axios(config);
-}
-
-async function getSpotifySearch(authToken, searchQuery) {
-  const url = `${spotifySearchUrl}q=${searchQuery}&type=album&limit=5`;
-  const config = {
-    method: 'get',
-    url,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-  };
-  return await axios(config);
-}
-
 app.get('/albums', (req, res) => {
   // todo: replace this with session var or crypted cookie for authToken
   let authToken = '';
-  getSpotifyAuthToken()
+  SpotifyAPIService.getSpotifyAuthToken(spotifyAuthUrl, spotifyAuthClient)
     .then((authRes) => {
       authToken = authRes.data.access_token;
       if (req.query.albumId) {
-        getSpotifyAlbum(authToken, req.query.albumId)
+        SpotifyAPIService.getSpotifyAlbum(spotifyAlbumsUrl, authToken, req.query.albumId)
           .then((albumRes) => {
             if (albumRes.data.albums[0] !== null) {
               const responsePayload = {
@@ -119,34 +93,20 @@ app.get('/albums', (req, res) => {
             }
           })
           .catch((err) => {
-            console.log(`Spotify Album error => ${err}`);
-            console.log(err);
-            res.status(err.response.status).send(`Spotify Album error => ${err}`);
+            console.log(`Spotify Album error => ${err.error.message}`);
+            res.status(err.error.status).send(`Spotify Album error => ${err.error.message}`);
           });
       } else {
         console.log('Album ID parameter is empty. Process aborted');
-        res.status(err.response.status).send('Album ID parameter is empty. Process aborted');
+        res.status(400).send('Album ID parameter is empty. Process aborted');
       }
     }).catch((err) => {
       console.log(`Spotify Auth error => ${err}`);
-      res.status(err.response.status).send(`Spotify Auth error => ${err}`);
+      res.status(err.response.status).send(`Spotify Auth error => ${err.response.body}`);
     });
 });
 
-async function getSpotifyAlbum(authToken, albumId) {
-  const url = `${spotifyAlbumsUrl}ids=${albumId}`;
-  const config = {
-    method: 'get',
-    url,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-  };
-  return await axios(config);
-}
+// -------------------------- EXPORTS -------------------------- 
 
-app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
-});
+export default app;
+export const Port = port;
