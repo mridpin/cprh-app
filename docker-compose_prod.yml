@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   app:
-    image: ridao/cprh:v1.0
+    image: ridao/cprh:dev
     command: npm run start
     ports:
       - "8000:8000"
