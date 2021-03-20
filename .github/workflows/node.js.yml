@@ -11,17 +11,20 @@ on:
 
 jobs:
   build:
-    name: Build App
+    name: Build pp
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
     steps:
+    # Setup container
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    # Create env file for env vars
     - name: Create env file
       run: |
         touch .env
@@ -31,20 +34,9 @@ jobs:
         echo NODE_ENV=production >> .env
         echo PORT=8000 >> .env
         cat .env
-    - run: npm ci
+    - name: Run npm ci to install dependencies    
+      run: npm ci
 
-  test:
-    name: Run tests
-    runs-on: ubuntu-latest
-    needs: build
-    strategy:
-      matrix:
-        node-version: [14.x]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+    # Run tests
     - name: Run tests
       run: npm test
