@@ -8,7 +8,8 @@ const CLIENT_SECRET = utf8.encode(process.env.CLIENT_SECRET);
 
 const config = {
     port: process.env.PORT,
-
+    logLevel: process.env.LOG_LEVEL,
+    
     spotifyAuthUrl: 'https://accounts.spotify.com/api/token',
     spotifyAuthClient: `Basic ${base64.encode(`${CLIENT_ID}:${CLIENT_SECRET}`)}`,
     spotifySearchUrl: 'https://api.spotify.com/v1/search?',

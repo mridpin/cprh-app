@@ -3,6 +3,7 @@ import cors from 'cors';
 
 import SpotifyAPIService from '../service/spotifyAPIservice.js';
 import config from '../config/config.js';
+import logger from '../utils/logger.js';
 
 // Constants
 const app = new Express();
@@ -31,19 +32,19 @@ app.get('/search', (req, res) => {
       if (req.query.search) {
         SpotifyAPIService.getSpotifySearch(config.spotifySearchUrl, authToken, req.query.search)
           .then((searchRes) => {
-            console.log(`Search query to Spotify successful. Returning ${searchRes.data.albums.items.length} items`);
+            logger.info(`Search query to Spotify successful. Returning ${searchRes.data.albums.items.length} items`);
             res.status(200).send(searchRes.data);
           })
           .catch((err) => {
-            console.log(`Spotify Search error => ${err.error.message}`);
+            logger.error(`Spotify Search error => ${err.error.message}`);
             res.status(err.error.status).send(`Spotify Search error => ${err.error.message}`);
           });
       } else {
-        console.log('Search parameters are empty. Process aborted');
+        logger.info('Search parameters are empty. Process aborted');
         res.status(400).send('Search parameters are empty. Process aborted');
       }
     }).catch((err) => {
-      console.log(`Spotify Auth error ${err.response.body}`);
+      logger.error(`Spotify Auth error ${err.response.body}`);
       res.status(err.response.status).send(`Spotify Auth error => ${err.response.body}`);
     });
 });
@@ -71,22 +72,23 @@ app.get('/albums', (req, res) => {
                 name: albumRes.data.albums[0].name,
                 release_date: albumRes.data.albums[0].release_date,
               };
-              console.log('Albums query to Spotify successful. Returning found album');
+              logger.info('Albums query to Spotify successful. Returning found album');
               res.send(responsePayload);
             } else {
+              logger.info('Spotify Album error => Requested album does not exist');
               res.status(404).send('Spotify Album error => Requested album does not exist');
             }
           })
           .catch((err) => {
-            console.log(`Spotify Album error => ${err.error.message}`);
+            logger.error(`Spotify Album error => ${err.error.message}`);
             res.status(err.error.status).send(`Spotify Album error => ${err.error.message}`);
           });
       } else {
-        console.log('Album ID parameter is empty. Process aborted');
+        logger.info('Album ID parameter is empty. Process aborted');
         res.status(400).send('Album ID parameter is empty. Process aborted');
       }
     }).catch((err) => {
-      console.log(`Spotify Auth error => ${err}`);
+      logger.error(`Spotify Auth error => ${err}`);
       res.status(err.response.status).send(`Spotify Auth error => ${err.response.body}`);
     });
 });
