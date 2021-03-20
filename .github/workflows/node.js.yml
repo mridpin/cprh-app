@@ -23,7 +23,7 @@ jobs:
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       LOG_LEVEL: info
-      NODE_ENV: development
+      NODE_ENV: development # for the tests
       PORT: 8000
     steps:
     # Setup container

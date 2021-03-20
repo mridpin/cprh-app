@@ -44,8 +44,8 @@ app.get('/search', (req, res) => {
         res.status(400).send('Search parameters are empty. Process aborted');
       }
     }).catch((err) => {
-      logger.error(`Spotify Auth error ${err.response.body}`);
-      res.status(err.response.status).send(`Spotify Auth error => ${err.response.body}`);
+      logger.error(`Spotify Auth error => ${err}`);
+      res.status(err.response.status).send(`Spotify Auth error => ${err}`);
     });
 });
 
@@ -89,7 +89,7 @@ app.get('/albums', (req, res) => {
       }
     }).catch((err) => {
       logger.error(`Spotify Auth error => ${err}`);
-      res.status(err.response.status).send(`Spotify Auth error => ${err.response.body}`);
+      res.status(err.response.status).send(`Spotify Auth error => ${err}`);
     });
 });
 
