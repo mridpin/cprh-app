@@ -2,8 +2,8 @@ import chai from 'chai';
 import supertest from 'supertest';
 import sinon from 'sinon';
 
-import app from '../src/server.js';
-import SpotifyAPIService from "../src/spotifyAPIservice.js";
+import app from '../src/api/server.js';
+import SpotifyAPIService from "../src/service/spotifyAPIservice.js";
 
 const expect = chai.expect;
 const request = supertest(app);

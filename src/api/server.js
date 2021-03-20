@@ -1,8 +1,8 @@
 import Express from 'express';
 import cors from 'cors';
 
-import SpotifyAPIService from './spotifyAPIservice.js';
-import config from './config/config.js';
+import SpotifyAPIService from '../service/spotifyAPIservice.js';
+import config from '../config/config.js';
 
 // Constants
 const app = new Express();
