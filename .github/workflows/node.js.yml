@@ -24,8 +24,15 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Dotenv Action
-      uses: falti/dotenv-action@v0.2.5 
+    - name: Create env file
+      run: |
+        tourch .env
+        echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
+        echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+        echo LOG_LEVEL=info >> .env
+        echo NODE_ENV=production >> .env
+        echo PORT=8000 >> .env
+        cat .env
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
