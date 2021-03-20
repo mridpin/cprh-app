@@ -1,24 +1,12 @@
-import assert from 'assert';
 import chai from 'chai';
-import { response } from 'express';
 import supertest from 'supertest';
 import sinon from 'sinon';
 
 import app from '../src/server.js';
 import SpotifyAPIService from "../src/spotifyAPIservice.js";
-import { resolve } from 'path';
 
 const expect = chai.expect;
-// const app = App;
 const request = supertest(app);
-
-
-// Smoke test
-// describe('Smoke test', () => {
-//     it('should return true', () => {
-//         expect(1 + 1).to.equal(2);
-//     });
-// });
 
 // ------ GLOBAL CONSTANTS ------ // 
 const spotifyAuthRes = {
@@ -26,6 +14,13 @@ const spotifyAuthRes = {
         access_token: '123',
     }
 };
+
+// Smoke test
+describe('Smoke test', () => {
+    it('should return true', () => {
+        expect(1 + 1).to.equal(2);
+    });
+});
 
 // ------ TESTS FOR SEARCH ENDPOINT ------ //
 describe('/search endpoint tests', () => {

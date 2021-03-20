@@ -1,30 +1,15 @@
-import base64 from 'base-64';
-import utf8 from 'utf8';
 import Express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv'
+
 import SpotifyAPIService from './spotifyAPIservice.js';
+import config from './config/config.js';
 
 // Constants
-dotenv.config();
-const CLIENT_ID = utf8.encode(process.env.CLIENT_ID);
-const CLIENT_SECRET = utf8.encode(process.env.CLIENT_SECRET);
 const app = new Express();
-const port = process.env.PORT;
-
-export const spotifyAuthUrl = 'https://accounts.spotify.com/api/token';
-export const spotifyAuthClient = `Basic ${base64.encode(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
-
-export const spotifySearchUrl = 'https://api.spotify.com/v1/search?';
-export const spotifyAlbumsUrl = 'https://api.spotify.com/v1/albums?';
 
 // Configs
 app.use(Express.json());
 app.use(cors());
-
-// Auth: get token
-console.log(process.env.CLIENT_ID);
-console.log(process.env.CLIENT_SECRET);
 
 // -------------------------- API ENDPOINTS --------------------------
 app.get('/', (req, res) => {
@@ -37,14 +22,14 @@ app.get('/', (req, res) => {
  */
 app.get('/search', (req, res) => {
   let authToken = '';
-  SpotifyAPIService.getSpotifyAuthToken(spotifyAuthUrl, spotifyAuthClient)
+  SpotifyAPIService.getSpotifyAuthToken(config.spotifyAuthUrl, config.spotifyAuthClient)
     .then((authRes) => {
       authToken = authRes.data.access_token;
       // todo: sanitize user input
       // todo: decode %20 spaces
       // todo: check for valid input BEFORE calling spofity auth
       if (req.query.search) {
-        SpotifyAPIService.getSpotifySearch(spotifySearchUrl, authToken, req.query.search)
+        SpotifyAPIService.getSpotifySearch(config.spotifySearchUrl, authToken, req.query.search)
           .then((searchRes) => {
             console.log(`Search query to Spotify successful. Returning ${searchRes.data.albums.items.length} items`);
             res.status(200).send(searchRes.data);
@@ -70,11 +55,11 @@ app.get('/search', (req, res) => {
 app.get('/albums', (req, res) => {
   // todo: replace this with session var or crypted cookie for authToken
   let authToken = '';
-  SpotifyAPIService.getSpotifyAuthToken(spotifyAuthUrl, spotifyAuthClient)
+  SpotifyAPIService.getSpotifyAuthToken(config.spotifyAuthUrl, config.spotifyAuthClient)
     .then((authRes) => {
       authToken = authRes.data.access_token;
       if (req.query.albumId) {
-        SpotifyAPIService.getSpotifyAlbum(spotifyAlbumsUrl, authToken, req.query.albumId)
+        SpotifyAPIService.getSpotifyAlbum(config.spotifyAlbumsUrl, authToken, req.query.albumId)
           .then((albumRes) => {
             if (albumRes.data.albums[0] !== null) {
               const responsePayload = {
@@ -107,6 +92,4 @@ app.get('/albums', (req, res) => {
 });
 
 // -------------------------- EXPORTS -------------------------- 
-
 export default app;
-export const Port = port;
