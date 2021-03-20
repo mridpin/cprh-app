@@ -19,13 +19,12 @@ jobs:
         docker-user: [ridao]
         app-name: [cprh]
     # Docker container params
-    container:
-      env:
-        CLIENT_ID: ${{ secrets.CLIENT_ID }}
-        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-        LOG_LEVEL: info
-        NODE_ENV: production
-        PORT: 8000
+    env:
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      LOG_LEVEL: info
+      NODE_ENV: production
+      PORT: 8000
     steps:
     # Setup container
     - uses: actions/checkout@v2
