@@ -26,7 +26,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Create env file
       run: |
-        tourch .env
+        touch .env
         echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
         echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
         echo LOG_LEVEL=info >> .env
