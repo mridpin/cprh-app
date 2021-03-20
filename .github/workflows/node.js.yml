@@ -16,6 +16,8 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+        docker-user: [ridao]
+        app-name: [cprh]
     steps:
     # Setup container
     - uses: actions/checkout@v2
@@ -43,4 +45,10 @@ jobs:
     
     # Create docker image
     - name: Create docker image
-      run: docker-compose build
+      run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:dev
+
+    # Publish image to dockerhub
+    - name: Login to dockerhub
+      run: docker login -u ${{ matrix.docker-user }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: Push image to dockerhub
+      run: docker push ${{ matrix.docker-user }}/cprh:dev
