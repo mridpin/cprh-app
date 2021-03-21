@@ -18,13 +18,6 @@ jobs:
         node-version: [14.x]
         docker-user: [ridao]
         app-name: [cprh]
-    # Docker container params
-    env:
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      LOG_LEVEL: info
-      NODE_ENV: development # for the tests
-      PORT: 8000
     steps:
     # Setup container
     - uses: actions/checkout@v2
