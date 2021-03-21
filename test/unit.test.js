@@ -44,14 +44,12 @@ describe('/search endpoint tests', () => {
     it('401 spotify invalid token error', done => {
         const query = { search: 'test' };
         const expected = {
-            status: 401,
-            body: 'Spotify Auth error => Invalid access token'
+            status: 500,
+            body: 'Could not connect to Spotify API, please try again later or contact site admin'
         };
         const err = {
-            response: {
-                status: 401,
-                body: 'Invalid access token'
-            }
+            status: 500,
+            body: 'Could not connect to Spotify API, please try again later or contact site admin'
         };
         // mock network calls to spotify
         sinon.stub(SpotifyAPIService, "getSpotifyAuthToken").returns(new Promise((res, rej) => { rej(err) }));
@@ -125,14 +123,12 @@ describe('/album endpoint tests', () => {
     it('401 spotify invalid token error', done => {
         const query = { albumId: 'test123' };
         const expected = {
-            status: 401,
-            body: 'Spotify Auth error => Invalid access token'
+            status: 500,
+            body: 'Could not connect to Spotify API, please try again later or contact site admin'
         };
         const err = {
-            response: {
-                status: 401,
-                body: 'Invalid access token'
-            }
+            status: 500,
+            body: 'Could not connect to Spotify API, please try again later or contact site admin'
         };
         // mock network calls to spotify
         sinon.stub(SpotifyAPIService, "getSpotifyAuthToken").returns(new Promise((res, rej) => { rej(err) }));

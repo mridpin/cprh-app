@@ -45,7 +45,7 @@ app.get('/search', (req, res) => {
       }
     }).catch((err) => {
       logger.error(`Spotify Auth error => ${err}`);
-      res.status(err.response.status).send(`Spotify Auth error => ${err}`);
+      res.status(500).send(`Could not connect to Spotify API, please try again later or contact site admin`);
     });
 });
 
@@ -89,7 +89,7 @@ app.get('/albums', (req, res) => {
       }
     }).catch((err) => {
       logger.error(`Spotify Auth error => ${err}`);
-      res.status(err.response.status).send(`Spotify Auth error => ${err}`);
+      res.status(500).send(`Could not connect to Spotify API, please try again later or contact site admin`);
     });
 });
 
