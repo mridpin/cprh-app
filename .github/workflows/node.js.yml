@@ -26,12 +26,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    # Create env file for env vars
+    # Create env file for env vars. Each new env var must be added here
     - name: Create env file
       run: |
         touch .env
-        echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
-        echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+        echo CLIENT_ID=123test >> .env
+        echo CLIENT_SECRET=123test >> .env
         echo LOG_LEVEL=info >> .env
         echo NODE_ENV=development >> .env
         echo PORT=8000 >> .env
