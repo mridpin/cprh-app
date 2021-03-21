@@ -3,6 +3,8 @@ services:
   webapp:
     build: .
     command: npm run start
+    env_file:
+      - .env
     volumes:
       # allows to make changes to the project from local development, will be picked up by project inside Docker
       - .:/usr/app/ 
