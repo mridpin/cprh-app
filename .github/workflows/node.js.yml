@@ -60,6 +60,10 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: heroku container:login
+    - name: Tag image for heroku registry
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: docker tag ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }} ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:${{ matrix.dev-tag }}
     - name: Push image to heroku registry
       env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
