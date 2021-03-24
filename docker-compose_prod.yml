@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   app:
-    image: ridao/cprh:dev
+    image: registry.heroku.com/cprh-app/web:dev
     command: npm run start
     env_file:
       - .env

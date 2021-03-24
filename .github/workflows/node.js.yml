@@ -68,9 +68,16 @@ jobs:
       env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:${{ matrix.dev-tag }}
-    - name: Release image on heroku
+    - name: Get image id
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:release web -a cprh-app
+      run: image_id=$(docker inspect ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:${{ matrix.dev-tag }} --format={{.Id}})
+    - name: Release image on heroku using API (container:release does not work here)
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        curl --netrc -X PATCH https://api.heroku.com/apps/${{ matrix.app-name }}/formation -d '{ "updates": [ { "type": "web", "docker_image": "$image_id" } ] }' -H "Content-Type: application/json" -H "Accept: application/vnd.heroku+json; version=3.docker-releases"
+
+    
 
       
