@@ -19,6 +19,7 @@ jobs:
         docker-user: [ridao]
         app-name: [cprh-app]
         cloud-registry: [registry.heroku.com]
+        dev-tag: [dev]
     steps:
     # Setup container
     - uses: actions/checkout@v2
@@ -46,15 +47,15 @@ jobs:
     
     # Create docker image
     - name: Create docker image
-      run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:dev
+      run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }}
 
     # Publish image to dockerhub
     - name: Login to dockerhub
       run: docker login -u ${{ matrix.docker-user }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
     - name: Push image to dockerhub
-      run: docker push ${{ matrix.docker-user }}/cprh:dev
+      run: docker push ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }}
 
-    # Publish image to heroku
+    # Publish image to heroku. This is super easy cause github actions comes with heroku cli installed
     - name: Login to heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -62,5 +63,10 @@ jobs:
     - name: Push image to heroku registry
       env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:dev
+      run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:${{ matrix.dev-tag }}
+    - name: Release image on heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:release web
 
+      
