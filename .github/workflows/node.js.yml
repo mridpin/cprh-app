@@ -17,7 +17,8 @@ jobs:
       matrix:
         node-version: [14.x]
         docker-user: [ridao]
-        app-name: [cprh]
+        app-name: [cprh-app]
+        cloud-registry: [registry.heroku.com]
     steps:
     # Setup container
     - uses: actions/checkout@v2
@@ -58,4 +59,8 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: heroku container:login
+    - name: Push image to heroku registry
+      env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:dev
 
