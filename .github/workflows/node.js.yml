@@ -32,14 +32,14 @@ jobs:
     - name: Create env file
       run: |
         touch .env
-        echo CLIENT_ID=123test >> .env
-        echo CLIENT_SECRET=123test >> .env
-        echo LOG_LEVEL=info >> .env
+        echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
+        echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+        echo LOG_LEVEL=debug >> .env
         echo NODE_ENV=development >> .env
         echo PORT=8000 >> .env
         cat .env
-    - name: Run npm ci to install dependencies    
-      run: npm ci
+    - name: Run npm i to install dependencies    
+      run: npm install
 
     # Run tests
     - name: Run tests
