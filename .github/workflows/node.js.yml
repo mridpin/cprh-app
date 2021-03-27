@@ -63,21 +63,15 @@ jobs:
     - name: Tag image for heroku registry
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: docker tag ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }} ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:${{ matrix.dev-tag }}
+      run: docker tag ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }} ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web
     - name: Push image to heroku registry
       env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:${{ matrix.dev-tag }}
-    - name: Get image id
+      run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web
+    - name: Release image
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: image_id=$(docker inspect ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web:${{ matrix.dev-tag }} --format={{.Id}})
-    - name: Release image on heroku using API (container:release does not work here)
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: |
-        curl --netrc -X PATCH https://api.heroku.com/apps/${{ matrix.app-name }}/formation -d '{ "updates": [ { "type": "web", "docker_image": "$image_id" } ] }' -H "Content-Type: application/json" -H "Accept: application/vnd.heroku+json; version=3.docker-releases"
-
+      run: heroku container:release web -a ${{ matrix.app-name }}
     
 
       

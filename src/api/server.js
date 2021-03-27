@@ -14,7 +14,7 @@ app.use(cors());
 
 // -------------------------- API ENDPOINTS --------------------------
 app.get('/', (req, res) => {
-  res.json({ message: 'ola maria!' });
+  res.json({ message: 'Hello world!' });
 });
 
 /**
