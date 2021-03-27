@@ -26,51 +26,47 @@ jobs:
     # Get recently pushed tag to tag the images
     - name: Get latest tag
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-    - name: Test
+
+    # Create env file for env vars. Each new env var must be added here
+    - name: Create env file
       run: |
-        echo $RELEASE_VERSION
-        echo ${{ env.RELEASE_VERSION }}
-
-    # # Create env file for env vars. Each new env var must be added here
-    # - name: Create env file
-    #   run: |
-    #     touch .env
-    #     echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
-    #     echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
-    #     echo LOG_LEVEL=info >> .env
-    #     echo NODE_ENV=production >> .env
-    #     echo PORT=8000 >> .env
-    #     cat .env
-    # - name: Run npm ci to install dependencies    
-    #   run: npm ci
+        touch .env
+        echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
+        echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+        echo LOG_LEVEL=info >> .env
+        echo NODE_ENV=production >> .env
+        echo PORT=8000 >> .env
+        cat .env
+    - name: Run npm ci to install dependencies    
+      run: npm ci
     
-    # # Create docker image
-    # - name: Create docker image
-    #   run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }}
+    # Create docker image
+    - name: Create docker image
+      run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:$RELEASE_VERSION
 
-    # # Publish image to dockerhub
-    # - name: Login to dockerhub
-    #   run: docker login -u ${{ matrix.docker-user }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-    # - name: Push image to dockerhub
-    #   run: docker push ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }}
+    # Publish image to dockerhub
+    - name: Login to dockerhub
+      run: docker login -u ${{ matrix.docker-user }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: Push image to dockerhub
+      run: docker push ${{ matrix.docker-user }}/${{ matrix.app-name }}:$RELEASE_VERSION
 
-    # # Publish image to heroku. This is super easy cause github actions comes with heroku cli installed
-    # - name: Login to heroku
-    #   env:
-    #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    #   run: heroku container:login
-    # - name: Tag image for heroku registry
-    #   env:
-    #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    #   run: docker tag ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }} ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web
-    # - name: Push image to heroku registry
-    #   env:
-    #       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    #   run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web
-    # - name: Release image
-    #   env:
-    #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    #   run: heroku container:release web -a ${{ matrix.app-name }}
+    # Publish image to heroku. This is super easy cause github actions comes with heroku cli installed
+    - name: Login to heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:login
+    - name: Tag image for heroku registry
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: docker tag ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.dev-tag }} ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web
+    - name: Push image to heroku registry
+      env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: docker push ${{ matrix.cloud-registry }}/${{ matrix.app-name }}/web
+    - name: Release image
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:release web -a ${{ matrix.app-name }}
     
 
       
