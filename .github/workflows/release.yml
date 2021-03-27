@@ -1,5 +1,5 @@
 # This workflow will do a clean install of node dependencies, build the source code and publish release, production ready containers of the code
-name: DEV Node CI Pipeline
+name: PROD Node CD Pipeline
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
     
     # Get recently pushed tag to tag the images
     - name: Get latest tag
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $TAG
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     # # Create env file for env vars. Each new env var must be added here
     # - name: Create env file
