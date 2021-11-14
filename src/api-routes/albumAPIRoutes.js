@@ -1,7 +1,7 @@
 import Express from 'express';
 import cors from 'cors';
 
-import SpotifyAPIService from '../service/spotifyAPIservice.js';
+import SpotifyAPIService from '../utils/spotifyAPIservice.js';
 import config from '../config/config.js';
 import logger from '../utils/logger.js';
 

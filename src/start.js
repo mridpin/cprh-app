@@ -1,4 +1,4 @@
-import app from './api/server.js';
+import app from './api-routes/albumAPIRoutes.js';
 import config from './config/config.js';
 import logger from './utils/logger.js';
 
