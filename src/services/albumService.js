@@ -14,13 +14,13 @@ const createAlbum = async (payload) => {
     spotifyId: album.id,
     name: album.name,
     releaseDate: album.releaseDate,
-    copyright: album.copyrights[0].text,
+    copyright: album.copyrights[0].text.replace(/^.*[0-9]{4}\s/, ''), // removes the (c) and the year
   });
   try {
     await albumQuery.save();
   } catch (err) {
     // if mongo errors due to duplicate key, it does not matter for the user experience
-    logger.error(`Mongo Error => ${err}`);
+    logger.warn(`Mongo Error => ${err}`);
   }
   return album;
 };
