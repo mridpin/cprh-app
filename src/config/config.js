@@ -9,11 +9,16 @@ const CLIENT_SECRET = utf8.encode(process.env.CLIENT_SECRET);
 const config = {
     port: process.env.PORT,
     logLevel: process.env.LOG_LEVEL,
-
+    // spotify api
     spotifyAuthUrl: 'https://accounts.spotify.com/api/token',
     spotifyAuthClient: `Basic ${base64.encode(`${CLIENT_ID}:${CLIENT_SECRET}`)}`,
     spotifySearchUrl: 'https://api.spotify.com/v1/search?',
     spotifyAlbumsUrl: 'https://api.spotify.com/v1/albums?',
+    // database
+    mongodb_uri: process.env.MONGODB_URI,
+    mongodb_port: process.env.MONGODB_PORT,
+    mongodb_root: process.env.MONGO_ROOT_USERNAME,
+    mongodb_pass: process.env.MONGO_ROOT_PASSWORD
 };
 
 export default config;
