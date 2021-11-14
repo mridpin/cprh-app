@@ -1,6 +1,6 @@
-import { AlbumAdapter } from "../models/album.js";
-import AlbumQueryModel from "../models/album.js";
-import logger from "../utils/logger.js";
+import { AlbumAdapter } from '../models/album.js';
+import AlbumQueryModel from '../models/album.js';
+import logger from '../utils/logger.js';
 
 /**
  * stores payload in database and returns it as an Album object
@@ -16,7 +16,6 @@ const createAlbum = async (payload) => {
     releaseDate: album.releaseDate,
     copyright: album.copyrights[0].text,
   });
-  console.log(albumQuery);
   try {
     await albumQuery.save();
   } catch (err) {
@@ -26,6 +25,33 @@ const createAlbum = async (payload) => {
   return album;
 };
 
+/**
+ * returns how many albums each copyright holder has
+ * @returns list of {copyright: string, count: number}
+ * https://stackoverflow.com/a/23116396/11829823
+ */
+const getStats = async () => {
+  const aggregatorOpts = [
+    {
+      $group: {
+        _id: '$copyright',
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        name: '$_id',
+        count: 1,
+      },
+    },
+  ];
+  return AlbumQueryModel.aggregate(aggregatorOpts);
+};
+
 export default {
   createAlbum,
+  getStats,
 };

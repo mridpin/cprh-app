@@ -3,7 +3,6 @@ import config from '../../config/config.js';
 import logger from '../../utils/logger.js';
 import albumService from '../../services/albumService.js';
 
-
 /**
  * GET Endpoint. Returns the five most likely matches for the user search parameters
  * Query Params: search = terms to search from Spotify
@@ -17,20 +16,37 @@ const searchAlbums = async (req, res) => {
     return res.status(400).send('Search parameters are empty. Process aborted');
   }
   try {
-    const authToken = await SpotifyAPIService.getSpotifyAuthToken(config.spotifyAuthUrl, config.spotifyAuthClient);
+    const authToken = await SpotifyAPIService.getSpotifyAuthToken(
+      config.spotifyAuthUrl,
+      config.spotifyAuthClient
+    );
     try {
-      const searchRes = await SpotifyAPIService.getSpotifySearch(config.spotifySearchUrl, authToken.data.access_token, req.query.search);
-      logger.info(`Search query to Spotify successful. Returning ${searchRes.data.albums.items.length} items`);
+      const searchRes = await SpotifyAPIService.getSpotifySearch(
+        config.spotifySearchUrl,
+        authToken.data.access_token,
+        req.query.search
+      );
+      logger.info(
+        `Search query to Spotify successful. Returning ${searchRes.data.albums.items.length} items`
+      );
       return res.status(200).send(searchRes.data);
     } catch (err) {
-      logger.error(`Spotify Search error => ${err.response.data.error.message}`);
-      return res.status(err.response.data.error.status).send(`Spotify Search error => ${err.response.data.error.message}`);
+      logger.error(
+        `Spotify Search error => ${err.response.data.error.message}`
+      );
+      return res
+        .status(err.response.data.error.status)
+        .send(`Spotify Search error => ${err.response.data.error.message}`);
     }
   } catch (err) {
     logger.error(`Spotify Auth error => ${err}`);
-    return res.status(500).send(`Could not connect to Spotify API, please try again later or contact site admin`);
+    return res
+      .status(500)
+      .send(
+        `Could not connect to Spotify API, please try again later or contact site admin`
+      );
   }
-}
+};
 
 /**
  * GET Endpoint. Returns an album from Spotify API
@@ -43,28 +59,64 @@ const getAlbum = async (req, res) => {
     return res.status(400).send('Album ID parameter is empty. Process aborted');
   }
   try {
-    const authToken = await SpotifyAPIService.getSpotifyAuthToken(config.spotifyAuthUrl, config.spotifyAuthClient);
+    const authToken = await SpotifyAPIService.getSpotifyAuthToken(
+      config.spotifyAuthUrl,
+      config.spotifyAuthClient
+    );
     try {
-      const albumRes = await SpotifyAPIService.getSpotifyAlbum(config.spotifyAlbumsUrl, authToken.data.access_token, req.query.albumId);
+      const albumRes = await SpotifyAPIService.getSpotifyAlbum(
+        config.spotifyAlbumsUrl,
+        authToken.data.access_token,
+        req.query.albumId
+      );
       if (albumRes.data.albums[0] !== null) {
         const album = await albumService.createAlbum(albumRes.data);
-        logger.info('Albums query to Spotify successful. Returning found album');
+        logger.info(
+          'Albums query to Spotify successful. Returning found album'
+        );
         return res.send(album);
       } else {
         logger.info('Spotify Album error => Requested album does not exist');
-        return res.status(404).send('Spotify Album error => Requested album does not exist');
+        return res
+          .status(404)
+          .send('Spotify Album error => Requested album does not exist');
       }
     } catch (err) {
       logger.error(`Spotify Album error => ${err.response.data.error.message}`);
-      return res.status(err.response.data.error.status).send(`Spotify Album error => ${err.response.data.error.message}`);
+      return res
+        .status(err.response.data.error.status)
+        .send(`Spotify Album error => ${err.response.data.error.message}`);
     }
   } catch (err) {
     logger.error(`Spotify Auth error => ${err}`);
-    return res.status(500).send(`Could not connect to Spotify API, please try again later or contact site admin`);
+    return res
+      .status(500)
+      .send(
+        `Could not connect to Spotify API, please try again later or contact site admin`
+      );
   }
-}
+};
+
+/**
+ * GET Endpoint. Returns the copyright holders in order of appearances
+ */
+const getStats = async (req, res) => {
+  try {
+    const stats = await albumService.getStats();
+    logger.info('Stats load successful!');
+    return res.status(200).send(stats);
+  } catch (err) {
+    logger.error(`Server error => ${err}`);
+    return res
+      .status(500)
+      .send(
+        `Could not retrieve stats, please try again later or contact site admin`
+      );
+  }
+};
 
 export default {
   searchAlbums,
-  getAlbum
+  getAlbum,
+  getStats,
 };
