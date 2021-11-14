@@ -12,15 +12,15 @@ export class Album {
 }
 
 export class AlbumAdapter {
-    adapt(item) {
+    static adapt(data) {
         return new Album(
-            item.id,
-            item.name,
-            item.label,
-            item.releaseDate,
-            item.artists,
-            item.copyrights,
-            item.images
+            data.albums[0].id,
+            data.albums[0].artists,
+            data.albums[0].copyrights,
+            data.albums[0].images[0],
+            data.albums[0].label,
+            data.albums[0].name,
+            data.albums[0].release_date,
         );
     }
 }
