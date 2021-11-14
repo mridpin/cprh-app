@@ -2,7 +2,7 @@
   "name": "copyright-holder-check-app",
   "version": "1.0.0",
   "description": "server side for copyright holder checker app",
-  "main": "src/server.js",
+  "main": "src/start.js",
   "type": "module",
   "scripts": {
     "test": "mocha",

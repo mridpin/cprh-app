@@ -1,27 +1,13 @@
-import Express from 'express';
-import cors from 'cors';
+import SpotifyAPIService from '../../utils/spotifyAPIservice.js';
+import config from '../../config/config.js';
+import logger from '../../utils/logger.js';
 
-import SpotifyAPIService from '../utils/spotifyAPIservice.js';
-import config from '../config/config.js';
-import logger from '../utils/logger.js';
-
-// Constants
-const app = new Express();
-
-// Configs
-app.use(Express.json());
-app.use(cors());
-
-// -------------------------- API ENDPOINTS --------------------------
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello World!' });
-});
 
 /**
  * GET Endpoint. Returns the five most likely matches for the user search parameters
  * Query Params: search = terms to search from Spotify
  */
-app.get('/search', (req, res) => {
+const searchAlbums = async (req, res) => {
   let authToken = '';
   SpotifyAPIService.getSpotifyAuthToken(config.spotifyAuthUrl, config.spotifyAuthClient)
     .then((authRes) => {
@@ -47,13 +33,13 @@ app.get('/search', (req, res) => {
       logger.error(`Spotify Auth error => ${err}`);
       res.status(500).send(`Could not connect to Spotify API, please try again later or contact site admin`);
     });
-});
+}
 
 /**
  * GET Endpoint. Returns an album from Spotify API
  * Query Params: albumId = album id to search from Spotify
  */
-app.get('/albums', (req, res) => {
+const getAlbum = async (req, res) => {
   // todo: replace this with session var or crypted cookie for authToken
   let authToken = '';
   SpotifyAPIService.getSpotifyAuthToken(config.spotifyAuthUrl, config.spotifyAuthClient)
@@ -91,7 +77,9 @@ app.get('/albums', (req, res) => {
       logger.error(`Spotify Auth error => ${err}`);
       res.status(500).send(`Could not connect to Spotify API, please try again later or contact site admin`);
     });
-});
+}
 
-// -------------------------- EXPORTS -------------------------- 
-export default app;
+export default {
+  searchAlbums,
+  getAlbum
+};
