@@ -23,10 +23,3 @@ export class AlbumAdapter {
     );
   }
 }
-
-// Add index
-AlbumQueryModel.schema.index({
-  name: 1,
-});
-
-export default AlbumQueryModel;
