@@ -1,7 +1,6 @@
 import SpotifyAPIService from '../../utils/spotifyAPIservice.js';
 import config from '../../config/config.js';
 import logger from '../../utils/logger.js';
-import albumService from '../../services/albumService.js';
 
 /**
  * GET Endpoint. Returns the five most likely matches for the user search parameters
@@ -98,26 +97,8 @@ const getAlbum = async (req, res) => {
   }
 };
 
-/**
- * GET Endpoint. Returns the copyright holders in order of appearances
- */
-const getStats = async (req, res) => {
-  try {
-    const stats = await albumService.getStats();
-    logger.info('Stats load successful!');
-    return res.status(200).send(stats);
-  } catch (err) {
-    logger.error(`Server error => ${err}`);
-    return res
-      .status(500)
-      .send(
-        `Could not retrieve stats, please try again later or contact site admin`
-      );
-  }
-};
 
 export default {
   searchAlbums,
-  getAlbum,
-  getStats,
+  getAlbum
 };
