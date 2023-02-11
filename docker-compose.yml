@@ -1,39 +1,41 @@
 version: '3.9'
 services:
-  webapp:
+  api:
     build: .
-    command: npm run start
+    # image: 'cloud image name when available'
+    command: npm run dev
     env_file:
       - .env
     volumes:
       # allows to make changes to the project from local development, will be picked up by project inside Docker
-      - .:/usr/app/ 
+      - .:/usr/app/
       - /usr/app/node_modules
     ports:
       - "8000:8000"
-    links:
-      - mongo-db
+    container_name: cprh-api
+    # links:
+    #   - mongo-db
 
-  mongo-db:
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    container_name: mongo-server
-    image: mongo
-    volumes:
-      - ./data:/data/db
-    ports:
-      - '27017:27017'
+  # mongo-db:
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: example
+  #   container_name: mongo-server
+  #   image: mongo
+  #   volumes:
+  #     - ./data:/data/db
+  #   ports:
+  #     - '27017:27017'
 
-  mongo-express:
-    image: mongo-express
-    ports:
-      - 8081:8081
-    depends_on: 
-      - mongo-db
-    restart: always
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-      ME_CONFIG_MONGODB_SERVER: mongo-server
+  # mongo-express:
+  #   image: mongo-express
+  #   ports:
+  #     - 8081:8081
+  #   depends_on: 
+  #     - mongo-db
+  #   restart: always
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+  #     ME_CONFIG_MONGODB_SERVER: mongo-server
