@@ -8,6 +8,7 @@ import albumService from '../../services/albumService.js';
  * Query Params: search = terms to search from Spotify
  */
 const searchAlbums = async (req, res) => {
+  console.log('asdasdas lolo but better')
   // todo: sanitize user input
   // todo: decode %20 spaces
   // todo: check for valid input BEFORE calling spofity auth
@@ -70,7 +71,7 @@ const getAlbum = async (req, res) => {
         req.query.albumId
       );
       if (albumRes.data.albums[0] !== null) {
-        const album = await albumService.createAlbum(albumRes.data);
+        const album = albumRes.data.albums[0];
         logger.info(
           'Albums query to Spotify successful. Returning found album'
         );

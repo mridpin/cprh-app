@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 export class Album {
   constructor(id, name, label, releaseDate, artists, copyrights, images) {
     this.id = id;
@@ -24,38 +23,6 @@ export class AlbumAdapter {
     );
   }
 }
-
-// we dont want to save all the Album properties yet
-const albumQuerySchema = mongoose.Schema(
-  {
-    spotifyId: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    releaseDate: {
-      type: Date,
-      required: true,
-    },
-    copyright: {
-      type: String,
-      required: true,
-    }
-  },
-  {
-    strict: 'throw',
-    timestamps: { createdAt: '_createdAt', updatedAt: '_updatedAt' },
-  }
-);
-
-// compile schema to a model
-const AlbumQueryModel = mongoose.model('Album Query', albumQuerySchema);
 
 // Add index
 AlbumQueryModel.schema.index({
