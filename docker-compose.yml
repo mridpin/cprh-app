@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/usr/cprh/api
     ports:
-      - "8000:8000"
+      - "10000:10000"
     container_name: cprh-api
     # links:
     #   - mongo-db

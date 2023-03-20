@@ -36,7 +36,7 @@ jobs:
         echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
         echo LOG_LEVEL=debug >> .env
         echo NODE_ENV=development >> .env
-        echo PORT=8000 >> .env
+        echo PORT=10000 >> .env
         cat .env
     - name: Run npm i to install dependencies    
       run: npm install
