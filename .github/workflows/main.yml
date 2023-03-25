@@ -1,0 +1,45 @@
+name: main cicd
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # allows manual runs from the actions tab
+  workflow_dispatch:
+  
+jobs:
+  # todo: lint code job
+  build_node_app:
+    name: build node app
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      # checks out the repo
+      - uses: actions/checkout@v2
+      
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: create env file
+        # warning: all env vars must be added here as well. print for sanity
+        run: |
+          touch .env
+          echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
+          echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+          echo LOG_LEVEL=info >> .env
+          echo NODE_ENV=production >> .env
+          echo PORT=10000 >> .env
+          cat .env
+      - name: install dependencies    
+        run: npm ci
+
+  # todo: run tests job
+  # todo: prune devdeps job
+  # todo: build docker image
+
+  # todo: push image 
+  # todo: deploy image
