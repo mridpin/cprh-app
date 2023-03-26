@@ -16,7 +16,7 @@ jobs:
       matrix:
         node-version: [14.x]
     steps:
-      - name: checks out repo
+      - name: check out repo
         uses: actions/checkout@v2
 
       - name: setup node

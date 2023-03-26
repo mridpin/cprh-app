@@ -22,6 +22,8 @@ jobs:
         app-name: [cprh-app]
         tag: [latest]
     steps:
+      - name: check out repo
+        uses: actions/checkout@v2
       - name: build docker image
         run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.tag }}
       - name: login to dockerhub
