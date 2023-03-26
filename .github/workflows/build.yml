@@ -1,12 +1,12 @@
-name: main cicd
+name: build reusable workflow
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  # allows manual runs from the actions tab
+  workflow_call:
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
   workflow_dispatch:
-  
+
 jobs:
   # todo: lint code job
   build_node_app:
@@ -16,14 +16,14 @@ jobs:
       matrix:
         node-version: [14.x]
     steps:
-      # checks out the repo
-      - uses: actions/checkout@v2
-      
+      - name: checks out repo
+        uses: actions/checkout@v2
+
       - name: setup node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          
+
       - name: create env file
         # warning: all env vars must be added here as well. print for sanity
         run: |
@@ -34,12 +34,6 @@ jobs:
           echo NODE_ENV=production >> .env
           echo PORT=10000 >> .env
           cat .env
-      - name: install dependencies    
+
+      - name: install dependencies
         run: npm ci
-
-  # todo: run tests job
-  # todo: prune devdeps job
-  # todo: build docker image
-
-  # todo: push image 
-  # todo: deploy image

@@ -1,0 +1,30 @@
+name: docker
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_node_app:
+    uses: ./.github/workflows/build.yml
+
+  # todo: run tests job
+  # todo: prune devdeps job
+
+  publish_docker_image:
+    needs: build_node_app
+    name: build docker image and publish it to dockerhub
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        docker-user: [ridao]
+        app-name: [cprh-app]
+        tag: [latest]
+    steps:
+      - name: build docker image
+        run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.tag }}
+      - name: login to dockerhub
+        run: docker login -u ${{ matrix.docker-user }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Push image to dockerhub
+        run: docker push ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.tag }}
