@@ -21,7 +21,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: create env file
-        # warning: all env vars must be added here as well. print for sanity
+        # warning: all env vars must be added here as well
         run: |
           touch .env
           echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
@@ -29,7 +29,6 @@ jobs:
           echo LOG_LEVEL=info >> .env
           echo NODE_ENV=production >> .env
           echo PORT=10000 >> .env
-          cat .env
 
       - name: install dependencies
         run: npm ci
