@@ -1,0 +1,14 @@
+name: main workflow
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # todo: run tests job
+  # todo: prune devdeps job
+  build_node_app:
+    uses: ./.github/workflows/build.yml
+  publish_docker_image:
+    uses: ./.github/workflows/docker.yml
+    needs: build_node_app

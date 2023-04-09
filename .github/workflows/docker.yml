@@ -1,19 +1,11 @@
-name: docker
+name: docker reusable workflow
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
   workflow_dispatch:
 
 jobs:
-  build_node_app:
-    uses: ./.github/workflows/build.yml
-
-  # todo: run tests job
-  # todo: prune devdeps job
-
   publish_docker_image:
-    needs: build_node_app
+    # needs: build_node_app
     name: build docker image and publish it to dockerhub
     runs-on: ubuntu-latest
     strategy:
@@ -24,6 +16,17 @@ jobs:
     steps:
       - name: check out repo
         uses: actions/checkout@v2
+      - name: create env file for building
+        # warning: all env vars must be added here as well. print for sanity
+        run: |
+          touch .env
+          echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
+          echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+          echo LOG_LEVEL=info >> .env
+          echo NODE_ENV=production >> .env
+          echo PORT=10000 >> .env
+          cat .env
+
       - name: build docker image
         run: docker build . -t ${{ matrix.docker-user }}/${{ matrix.app-name }}:${{ matrix.tag }}
       - name: login to dockerhub
